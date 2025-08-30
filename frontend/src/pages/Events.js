@@ -6,6 +6,10 @@ function EventsPage() {
   const data = useLoaderData();
   const events = data.events;
 
+  if (data.isError) {
+    return <p>{data.message}</p>;
+  }
+
   return <EventsList events={events} />;
 }
 
@@ -15,16 +19,11 @@ export default EventsPage;
 
 // when we return res as Response object from loader function react-router-dom will extract data automatically -> 'ANY DATA' when using useLoaderData
 export async function loader() {
-  const response = await fetch("http://localhost:8080/events");
+  const response = await fetch("http://localhost:8080/eventsssss");
 
   if (!response.ok) {
-    // ...
+    return { isError: true, message: "Could not fetch events." };
   } else {
-    // const resData = await response.json(); // we don't need manually extract data anymore
-    // useLoaderData will get data that is part of the Response
-
-    // fetch function returns a promise, that is resolved to Response. so here we can just return it, and not creating new Response.
     return response;
-    // react-router will extract data from it automatically
   }
 }
