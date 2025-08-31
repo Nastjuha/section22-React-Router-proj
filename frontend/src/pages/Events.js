@@ -26,6 +26,11 @@ export async function loader() {
       // we prefer to throw a response so as error object has "status" prop and later we can build a generic error handling component
       status: 500,
     });
+
+    // json helper function from react-router-dom creates a response object, with data in json format
+    // worked until react-router-dom v6.13.4
+    // return json({ message: "Could not fetch events." }, { status: 500 });
+    // then in ErrorPage -> message = error.data.message; instead of parsing the data manually: message = JSON.parse(error.data).message;
   } else {
     return response;
   }
