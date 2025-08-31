@@ -2,10 +2,9 @@ import { useLoaderData } from "react-router-dom";
 
 import EventItem from "../components/EventItem";
 
+// we added a loader in App.js for this component, so we can use useLoaderData() hook to access the data returned by that loader function
 function EventDetailPage() {
   const data = useLoaderData();
-  //console.log("DATA: ", data);
-  //console.log("EVENT: ", data.event);
 
   return <EventItem event={data.event} />;
 }
@@ -31,7 +30,4 @@ export async function loader({ request, params }) {
   } else {
     return response;
   }
-
-  // OR simply:     return fetch("http://localhost:8080/events/" + params.eventId);
-  // react-router will automatically wait for the Promise AND give us access to the data to which it resolves
 }
