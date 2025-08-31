@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, json } from "react-router-dom";
 
 import EventsList from "../components/EventsList";
 
@@ -15,15 +15,17 @@ function EventsPage() {
 
 export default EventsPage;
 
-// code below is executed on client side (browser)
-
-// when we return res as Response object from loader function react-router-dom will extract data automatically -> 'ANY DATA' when using useLoaderData
 export async function loader() {
-  const response = await fetch("http://localhost:8080/eventssss");
+  const response = await fetch("http://localhost:8080/eventsddd");
 
   if (!response.ok) {
-    //return { isError: true, message: "Could not fetch events." };
     //throw { message: "Could not fetch events..............." };
+    // we can get hold of the data that being thrown as an error inside of the component that was rendered as error element, in this case ErrorPage component
+
+    throw new Response(JSON.stringify({ message: "Could not fetch events." }), {
+      // we prefer to throw a response so as error object has "status" prop and later we can build a generic error handling component
+      status: 500,
+    });
   } else {
     return response;
   }
