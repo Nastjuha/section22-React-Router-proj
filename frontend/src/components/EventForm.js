@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 
 import classes from "./EventForm.module.css";
 
@@ -9,7 +9,9 @@ function EventForm({ method, event }) {
   }
 
   return (
-    <form className={classes.form}>
+    // Form will make sure that the browser default of sending a request to the server on form submission will be omitted, BUT
+    // it will take that request and send it to the action function defined for the route that rendered this component
+    <Form method="post" className={classes.form}>
       <p>
         <label htmlFor="title">Title</label>
         <input
@@ -56,7 +58,7 @@ function EventForm({ method, event }) {
         </button>
         <button>Save</button>
       </div>
-    </form>
+    </Form>
   );
 }
 
