@@ -29,7 +29,7 @@ export async function action({ request, params }) {
 
   // react-router makes handling form submissions easy, extracting data from form.
   // For that being possible - each field in the form must have a name attribute, on all input fields and textareas.
-  const response = fetch("http://localhost:8080/events", {
+  const response = await fetch("http://localhost:8080/events", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
