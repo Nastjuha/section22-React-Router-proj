@@ -1,4 +1,4 @@
-import { useRouteLoaderData } from "react-router-dom";
+import { useRouteLoaderData, redirect } from "react-router-dom";
 
 import EventItem from "../components/EventItem";
 
@@ -30,4 +30,27 @@ export async function loader({ request, params }) {
   } else {
     return response;
   }
+}
+
+// we can extract the method from "submitted form" by using request obj
+export async function action({ request, params }) {
+  const response = await fetch(
+    "http://localhost:8080/events/" + params.eventId,
+    {
+      // we should configue the request. we can dynamically extract the 'method' from a kind of 'form submission' we did in EventItem.js, by using request obj
+      method: request.method, // request.method will be 'DELETE' here as we overrode it in EventItem.js
+    }
+  );
+
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({
+        message: "Could not delete event.",
+      }),
+      {
+        status: 500,
+      }
+    );
+  }
+  return redirect("/events");
 }
