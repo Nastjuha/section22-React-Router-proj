@@ -3,6 +3,7 @@ import {
   useNavigate,
   useNavigation,
   useActionData,
+  redirect,
 } from "react-router-dom";
 
 import classes from "./EventForm.module.css";
@@ -24,7 +25,7 @@ function EventForm({ method, event }) {
   return (
     // Form will make sure that the browser default of sending a request to the server on form submission will be omitted, BUT
     // it will take that request and send it to the action function defined for the route that rendered this component
-    <Form method="post" className={classes.form}>
+    <Form method={method} className={classes.form}>
       {/* data won't be set if we haven't submitted form yet; (data is coming from an action) */}
       {/* ch ecking for 'data' <=> if I submitted a form and an action returned some data, then check if i have nested obj - errors in my data */}
       {data && data.errors && (
@@ -87,3 +88,46 @@ function EventForm({ method, event }) {
 }
 
 export default EventForm;
+
+// request object contains form data
+export async function action({ request, params }) {
+  console.log("EventForm action: ", request, "params: ", params);
+  const method = request.method; // POST or PATCH
+  const data = await request.formData();
+
+  // to get access to the input field values that were submitted - use get method on formData object
+  const eventData = {
+    title: data.get("title"),
+    image: data.get("image"),
+    date: data.get("date"),
+    description: data.get("description"),
+  };
+
+  let url = "http://localhost:8080/events";
+
+  // in case we are editing an existing event
+  if (method === "PATCH") {
+    const eventId = params.eventId; // "eventId" because in route definition we used ":eventId"
+    url += `/${eventId}`;
+  }
+
+  const response = await fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(eventData),
+  });
+
+  if (response.status === 422) {
+    return response;
+  }
+
+  if (!response.ok) {
+    throw new Response(JSON.stringify({ message: "Could not save event." }), {
+      status: 500,
+    });
+  }
+
+  return redirect("/events");
+}
